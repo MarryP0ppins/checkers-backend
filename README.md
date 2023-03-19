@@ -7,8 +7,9 @@
 3. Открыть проект
 4. В командной строке проекта установить виртуальную среду и пакеты: `pipenv sync`
 
-### Список доступных быстрых команд (pipenv run <быстрая команда>): 
-1. install - pipenv install (обновеят файл Pipfile.lock)
+### Список доступных быстрых команд
+`pipenv run <быстрая команда>`
+1. install - pipenv install (обновляет файл Pipfile.lock)
 2. sync - pipenv sync (синхронизирует локальную виртуальную среду с файлом Pipfile.lock)
 3. runserver - python manage.py runserver (запускает сервер-backend)
 4. inspectdb - python manage.py inspecdb
