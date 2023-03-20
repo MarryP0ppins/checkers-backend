@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  db:
+    image: mongo:latest
+    environment:
+      - DB_PATH=${DB_PATH}
+    volumes:
+      - ${DB_PATH}:/data/db
+    ports:
+      - '27020:27017'
+  app:
+    container_name: checkers-back-app_dev
+    environment:
+      - NODE_ENV=development
+      - DB_URL=mongodb://checkers-back-db:27017/${DB_NAME}
+    volumes:
+      - .:/usr/app
+      - /usr/app/node_modules
+    command: npm run start:dev
