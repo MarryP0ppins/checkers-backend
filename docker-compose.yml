@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  db:
+    image: mongo
+    container_name: checkers-back-db
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PWD}
+    networks:
+      - webnet
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - '${APP_PORT}'
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
+    depends_on:
+      - db
+    networks:
+      - webnet
+networks:
+  webnet:
