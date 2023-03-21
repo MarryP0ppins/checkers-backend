@@ -1,6 +1,6 @@
 # checkers-backend
 
-### Макет-[Figma](https://www.figma.com/file/62z1qbCaoE2WpTbC4LewT8/%D1%88%D0%B0%D1%88%D0%BA%D0%B8)
+### Макет-[Figma](https://www.figma.com/file/zrSN1SvIU7xgRsSb9SlLd8/Checkers-with-MUI)
 ### Инструкция по установке и запуску сервера-backend
 
 1. Проверить наличие установленного python-пакета pipenv
