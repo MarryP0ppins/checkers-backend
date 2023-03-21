@@ -102,7 +102,7 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ('token', 'id')
 
     def update(self, instance, validated_data):
-        """ Выполняет обновление User. """
+        #Выполняет обновление User.
 
         # В отличие от других полей, пароли не следует обрабатывать с помощью
         # setattr. Django предоставляет функцию, которая обрабатывает пароли
