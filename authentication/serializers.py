@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
+from app.models import Profile
+
 from .backends import *
 
 
@@ -29,6 +31,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
+        
+        profile = Profile.objects.create(user=user)
+        profile.save()
+        
         return user
 
 
@@ -77,7 +83,7 @@ class LoginSerializer(serializers.Serializer):
         return user
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
     """ Осуществляет сериализацию и десериализацию объектов User. """
 
     # Пароль должен содержать от 8 до 128 символов. Это стандартное правило. Мы

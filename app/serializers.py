@@ -1,10 +1,16 @@
 from rest_framework import serializers
 from .models import *
+from authentication.models import User
 
 
-
-class UserInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserInfo
+class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField('_get_username')
+    
+    def _get_username(self, user):
+        return f'{user.user.username}'
         
-        fields = ["id", "wins", "games", "rating"]
+        
+    class Meta:
+        model = Profile
+        
+        fields = ["id", "username", "wins", "games", "rating"]

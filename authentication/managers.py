@@ -1,7 +1,5 @@
 from django.contrib.auth.models import BaseUserManager
 
-from app.models import UserInfo
-
 class UserManager(BaseUserManager):
     """
     Django требует, чтобы пользовательские `User`
@@ -21,14 +19,11 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError('Данный адрес электронной почты должен быть установлен')
         
-        user_info = UserInfo.objects.create()
-        user_info.save()
-        
         email = self.normalize_email(email)
-        user = self.model(username=username, email=email, statistics=user_info, **extra_fields)
+        user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-
+        
         return user
 
     def create_user(self, username, email, password=None, **extra_fields):

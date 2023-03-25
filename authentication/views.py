@@ -1,10 +1,10 @@
-from rest_framework import status
+from rest_framework import status, filters
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
-
+from rest_framework.decorators import api_view, action
 
 class RegistrationAPIView(APIView):
     """
@@ -61,7 +61,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
     permission_classes = [IsAuthenticated]
     # renderer_classes = (UserJSONRenderer,)
-    serializer_class = UserSerializer
+    serializer_class = UserRetrieveUpdateSerializer
 
     def retrieve(self, request, *args, **kwargs):
         # Здесь нечего валидировать или сохранять. Мы просто хотим, чтобы
@@ -82,3 +82,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'])
+    def users(self, request):
+        search_ids=self.request.query_para

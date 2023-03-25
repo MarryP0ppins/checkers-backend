@@ -2,13 +2,16 @@ from rest_framework import viewsets, status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+
+from authentication.models import User
 from .permissions import IsSuperUser
 from app.serializers import *
+from authentication.serializers import *
 
 
-class UserInfoViewSet(viewsets.ModelViewSet):
-    queryset = UserInfo.objects.all()
-    serializer_class = UserInfoSerializer
+class ProfileViewSet(viewsets.ModelViewSet):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
     ordering_fields = ['games', 'rating', 'wins']
     ordering = ['-rating', '-wins', 'games']
     
@@ -20,23 +23,22 @@ class UserInfoViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
     
     def list(self, request, *args, **kwargs):
-        serializer = UserInfoSerializer(self.filter_queryset(self.queryset), many=True)
+        serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, **kwargs):
-        queryset = UserInfo.objects.all()
+        queryset = Profile.objects.all()
         product = get_object_or_404(queryset, pk=pk)
-        serializer = UserInfoSerializer(product)
+        serializer = self.serializer_class(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None, **kwargs):
         try:
-            user_info = UserInfo.objects.get(pk=pk)
+            user_info = Profile.objects.get(pk=pk)
         except user_info.DoesNotExist:
             return Response({'message': 'The user info does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = UserInfoSerializer(user_info, data=request.data, partial=True)
+        serializer = self.serializer_class(user_info, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    

@@ -5,7 +5,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from app.views import *
 
 router = routers.DefaultRouter()
-router.register(r'user-info', UserInfoViewSet, basename='user-info')
+router.register(r'profile', ProfileViewSet, basename='profile')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
