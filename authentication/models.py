@@ -5,6 +5,7 @@ import jwt
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from time import time
 
 from .managers import UserManager
 
@@ -66,10 +67,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         Генерирует веб-токен JSON, в котором хранится идентификатор этого
         пользователя, срок действия токена составляет 1 день от создания
         """
-        dt = datetime.now() + timedelta(days=100)
-
+        print(time() + 8640000)
         token = jwt.encode({
             'id': self.pk,
-            'exp': int(dt.strftime('%s'))
+            'exp': time() + 8640000
         }, os.getenv('SECRET_KEY'), algorithm='HS256')
         return token
