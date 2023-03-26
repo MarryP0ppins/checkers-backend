@@ -14,6 +14,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     serializer_class = ProfileSerializer
     ordering_fields = ['games', 'rating', 'wins']
     ordering = ['-rating', '-wins', 'games']
+    search_fields = ['user__username']
     
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'partial_update']:
