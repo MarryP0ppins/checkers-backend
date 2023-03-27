@@ -1,5 +1,6 @@
 from rest_framework import permissions
 
+
 class IsSuperUser(permissions.BasePermission):
     """
     Allows access only to admin users.

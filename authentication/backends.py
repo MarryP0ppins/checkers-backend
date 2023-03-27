@@ -6,6 +6,7 @@ from .models import User
 
 import os
 
+
 class JWTAuthentication(authentication.BaseAuthentication):
     authentication_header_prefix = 'Bearer'
 
@@ -75,7 +76,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
         successful, return the user and token. If not, throw an error.
         """
         try:
-            payload = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=['HS256'])
+            payload = jwt.decode(token, os.getenv(
+                'SECRET_KEY'), algorithms=['HS256'])
         except Exception as e:
             msg = 'Invalid authentication. Could not decode token.'
             raise exceptions.AuthenticationFailed(msg)
@@ -84,10 +86,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
             user = User.objects.get(pk=payload['id'])
         except User.DoesNotExist:
             msg = 'No user matching this token was found.'
-            raise exceptions.AuthenticationFailed(msg)
-
-        if not user.is_active:
-            msg = 'This user has been deactivated.'
             raise exceptions.AuthenticationFailed(msg)
 
         return user, token
@@ -100,5 +98,5 @@ class JWTAuthentication(authentication.BaseAuthentication):
                 return None
 
             return self._authenticate_credentials(request, token)
-        except:
+        except BaseException:
             return None

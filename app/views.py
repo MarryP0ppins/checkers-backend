@@ -15,16 +15,17 @@ class ProfileViewSet(viewsets.ModelViewSet):
     ordering_fields = ['games', 'rating', 'wins']
     ordering = ['-rating', '-wins', 'games']
     search_fields = ['user__username']
-    
+
     def get_permissions(self):
         if self.action in ['list', 'retrieve', 'partial_update']:
             permission_classes = [IsAuthenticatedOrReadOnly]
         else:
             permission_classes = [IsSuperUser]
         return [permission() for permission in permission_classes]
-    
+
     def list(self, request, *args, **kwargs):
-        serializer = self.serializer_class(self.filter_queryset(self.queryset), many=True)
+        serializer = self.serializer_class(
+            self.filter_queryset(self.queryset), many=True)
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None, **kwargs):
@@ -37,8 +38,10 @@ class ProfileViewSet(viewsets.ModelViewSet):
         try:
             user_info = Profile.objects.get(pk=pk)
         except user_info.DoesNotExist:
-            return Response({'message': 'The user info does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(user_info, data=request.data, partial=True)
+            return Response(
+                {'message': 'The user info does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = self.serializer_class(
+            user_info, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

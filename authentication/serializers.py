@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-
 from app.models import Profile
 
 from .backends import *
@@ -26,15 +25,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password',
-                  'token', 'is_superuser')
+        fields = ('id', 'email', 'username', 'password', 'token')
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
-        
+
         profile = Profile.objects.create(user=user)
         profile.save()
-        
+
         return user
 
 
@@ -75,11 +73,6 @@ class LoginSerializer(serializers.Serializer):
                 'A user with this email and password was not found.'
             )
 
-        if not user.is_active:
-            raise serializers.ValidationError(
-                'This user has been deactivated.'
-            )
-
         return user
 
 
@@ -95,9 +88,19 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
+    profile = serializers.SerializerMethodField('_get_profile')
+
+    def _get_profile(self, user):
+        profile = Profile.objects.get(pk=user.id)
+        return {
+            "wins": profile.wins,
+            "games": profile.games,
+            "rating": profile.rating,
+        }
+
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'is_superuser')
+        fields = ('id', 'email', 'username', 'password', 'profile')
 
         # Параметр read_only_fields является альтернативой явному указанию поля
         # с помощью read_only = True, как мы это делали для пароля выше.
@@ -108,7 +111,7 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
         read_only_fields = ('token', 'id')
 
     def update(self, instance, validated_data):
-        #Выполняет обновление User.
+        # Выполняет обновление User.
 
         # В отличие от других полей, пароли не следует обрабатывать с помощью
         # setattr. Django предоставляет функцию, которая обрабатывает пароли

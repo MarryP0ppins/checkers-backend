@@ -11,25 +11,17 @@ from .managers import UserManager
 
 import os
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.BigAutoField(primary_key=True)
     username = models.CharField(db_index=True, max_length=16, unique=True)
     email = models.EmailField(db_index=True, unique=True, max_length=32)
 
-    # Когда пользователь более не желает пользоваться нашей системой, он может
-    # захотеть удалить свой аккаунт. Для нас это проблема, так как собираемые
-    # нами данные очень ценны, и мы не хотим их удалять :) Мы просто предложим
-    # пользователям способ деактивировать учетку вместо ее полного удаления.
-    # Таким образом, они не будут отображаться на сайте, но мы все еще сможем
-    # далее анализировать информацию.
-    is_active = models.BooleanField(default=True)
-    
     is_staff = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    
     # Свойство USERNAME_FIELD сообщает нам, какое поле мы будем использовать
     # для входа в систему. В данном случае мы хотим использовать почту.
     USERNAME_FIELD = 'email'

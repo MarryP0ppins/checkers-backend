@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
-from rest_framework.decorators import api_view, action
+
 
 class RegistrationAPIView(APIView):
     """
@@ -83,6 +83,10 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['get'])
-    def users(self, request):
-        search_ids=self.request.query_para
+    def delete(self, request, *args, **kwargs):
+        user = User.objects.get(pk=request.user.id)
+        if user:
+            user.delete()
+            return Response({"status": "ok"}, status=status.HTTP_200_OK)
+        return Response({"status": "error"},
+                        status=status.HTTP_400_BAD_REQUEST)

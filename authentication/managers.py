@@ -1,5 +1,6 @@
 from django.contrib.auth.models import BaseUserManager
 
+
 class UserManager(BaseUserManager):
     """
     Django требует, чтобы пользовательские `User`
@@ -14,16 +15,18 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, username, email, password=None, **extra_fields):
         if not username:
-            raise ValueError('Указанное имя пользователя должно быть установлено')
+            raise ValueError(
+                'Указанное имя пользователя должно быть установлено')
 
         if not email:
-            raise ValueError('Данный адрес электронной почты должен быть установлен')
-        
+            raise ValueError(
+                'Данный адрес электронной почты должен быть установлен')
+
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        
+
         return user
 
     def create_user(self, username, email, password=None, **extra_fields):
@@ -45,8 +48,9 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Суперпользователь должен иметь is_superuser=True.')
-        
+            raise ValueError(
+                'Суперпользователь должен иметь is_superuser=True.')
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Суперпользователь должен иметь is_staff=True.')
 

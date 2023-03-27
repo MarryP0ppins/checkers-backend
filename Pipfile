@@ -17,6 +17,7 @@ python-dotenv = "*"
 
 [dev-packages]
 pylint = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.11"
@@ -29,3 +30,4 @@ runserver = "python manage.py runserver"
 inspectdb = "python manage.py inspectdb"
 makemigrations = "python manage.py makemigrations"
 migrate = "python manage.py migrate"
+autopep8 = "autopep8 app authentication project --recursive --in-place -a --exclude __pycache__/"

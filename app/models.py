@@ -1,6 +1,7 @@
 from django.db import models
 from authentication.models import User
 
+
 class Profile(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
