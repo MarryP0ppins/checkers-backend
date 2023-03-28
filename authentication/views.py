@@ -1,5 +1,5 @@
-from rest_framework import status, filters
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework import status
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -57,7 +57,7 @@ class LoginAPIView(APIView):
         return response
 
 
-class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
+class UserRetrieveUpdateAPIView(RetrieveUpdateDestroyAPIView):
 
     permission_classes = [IsAuthenticated]
     # renderer_classes = (UserJSONRenderer,)

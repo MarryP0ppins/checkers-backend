@@ -73,6 +73,11 @@ class LoginSerializer(serializers.Serializer):
                 'A user with this email and password was not found.'
             )
 
+        if not user.is_active:
+            raise serializers.ValidationError(
+                'This user has not been activated.'
+            )
+
         return user
 
 

@@ -3,7 +3,6 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-from authentication.models import User
 from .permissions import IsSuperUser
 from app.serializers import *
 from authentication.serializers import *
@@ -26,7 +25,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             self.filter_queryset(self.queryset), many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None, **kwargs):
         queryset = Profile.objects.all()

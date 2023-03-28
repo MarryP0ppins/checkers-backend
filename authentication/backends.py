@@ -88,6 +88,10 @@ class JWTAuthentication(authentication.BaseAuthentication):
             msg = 'No user matching this token was found.'
             raise exceptions.AuthenticationFailed(msg)
 
+        if not user.is_active:
+            msg = 'This user has not been activated.'
+            raise exceptions.AuthenticationFailed(msg)
+
         return user, token
 
     def check_redis_token(self, request):
