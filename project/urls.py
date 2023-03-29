@@ -6,6 +6,7 @@ from app.views import *
 
 router = routers.DefaultRouter()
 router.register(r'profile', ProfileViewSet, basename='profile')
+router.register(r'games', GamesViewSet, basename='games')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

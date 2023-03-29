@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import *
-from authentication.models import User
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -13,3 +12,17 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
 
         fields = ["id", "username", "wins", "games", "rating"]
+
+
+class GamesSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Games
+
+        fields = [
+            "id",
+            "username_1",
+            "username_2",
+            "start_at",
+            "finish_at",
+            "moves"]
