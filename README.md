@@ -10,9 +10,9 @@
 
 ### Список доступных быстрых команд
 `pipenv run <быстрая команда>`
-1. install - pipenv install (обновляет файл Pipfile.lock)
-2. sync - pipenv sync (синхронизирует локальную виртуальную среду с файлом Pipfile.lock)
-3. runserver - python manage.py runserver (запускает сервер-backend)
-4. inspectdb - python manage.py inspecdb
-5. makemigrations - python manage.py makemigrations
-6. migrate - python manage.py migrate
+1. update - `bash -c 'pipenv update && pipenv clean'` (обновляет файл Pipfile.lock, устанавливает новые и удаляет не используемые пакеты)
+2. runserver - `python manage.py runserver` (запускает сервер-backend)
+3. inspectdb - `python manage.py inspecdb`
+4. makemigrations - `python manage.py makemigrations`
+5. migrate - `python manage.py migrate`
+6. autopep8 - `autopep8 app authentication project --recursive --in-place -a --exclude __pycache__/` (форматирует код)
