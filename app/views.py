@@ -1,9 +1,8 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-from .permissions import IsSuperUser
+from app.permissions import IsSuperUser
 from app.serializers import *
 from authentication.serializers import *
 
@@ -11,6 +10,7 @@ from authentication.serializers import *
 class ProfileViewSet(viewsets.ModelViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     ordering_fields = ['games', 'rating', 'wins']
     ordering = ['-rating', '-wins', 'games']
     search_fields = ['user__username']
@@ -50,8 +50,9 @@ class ProfileViewSet(viewsets.ModelViewSet):
 class GamesViewSet(viewsets.ModelViewSet):
     queryset = Games.objects.all()
     serializer_class = GamesSerializer
+    filter_backends = [filters.SearchFilter]
     search_fields = ['username_1', 'username_2']
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         serializer = self.serializer_class(

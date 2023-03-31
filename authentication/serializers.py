@@ -1,8 +1,9 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from app.models import Profile
-
-from .backends import *
+from authentication.models import User
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -18,18 +19,21 @@ class RegistrationSerializer(serializers.ModelSerializer):
         min_length=4,
         write_only=True,
     )
-
-    # The client should not be able to send a token along with a registration
-    # request. Making `token` read-only handles that for us.
-    token = serializers.CharField(max_length=255, read_only=True)
+    password2 = serializers.CharField(
+        style={"input_type": "password"}, write_only=True)
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'password', 'token')
+        fields = ('id', 'email', 'username', 'password', 'password2')
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        password = validated_data["password"]
+        password2 = validated_data.pop("password2")
 
+        if password != password2:
+            raise serializers.ValidationError('Passwords must match')
+
+        user = User.objects.create_user(**validated_data)
         profile = Profile.objects.create(user=user)
         profile.save()
 
@@ -37,24 +41,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    """
-    Authenticates an existing user.
-    Email and password are required.
-    Returns a JSON web token.
-    """
+    # Authenticates an existing user.
+    # Email and password are required.
+    # Returns a JSON web token.
+
     email = serializers.EmailField()
     password = serializers.CharField(max_length=128, write_only=True)
 
     # Ignore these fields if they are included in the request.
-    username = serializers.CharField(max_length=255, read_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
     id = serializers.IntegerField(read_only=True)
-    is_superuser = serializers.BooleanField(read_only=True)
+    username = serializers.CharField(max_length=255, read_only=True)
+    access_token = serializers.CharField(max_length=255, read_only=True)
+    refresh_token = serializers.CharField(max_length=255, read_only=True)
 
     def validate(self, data) -> User:
-        """
-        Validates user data.
-        """
+        # Validates user data.
+
         email = data.get('email', None)
         password = data.get('password', None)
 
@@ -68,17 +70,27 @@ class LoginSerializer(serializers.Serializer):
                 'A password is required to log in.'
             )
         user = authenticate(email=email, password=password)
+
         if user is None:
             raise serializers.ValidationError(
                 'A user with this email and password was not found.'
             )
 
-        if not user.is_active:
-            raise serializers.ValidationError(
-                'This user has not been activated.'
-            )
+        refresh = RefreshToken.for_user(user)
+        refresh_token = str(refresh)
+        access_token = str(refresh.access_token)
 
-        return user
+        update_last_login(None, user)
+
+        validation = {
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+        }
+
+        return validation
 
 
 class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
@@ -113,7 +125,7 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
         # состоит в том, что нам не нужно ничего указывать о поле. В поле
         # пароля требуются свойства min_length и max_length,
         # но это не относится к полю токена.
-        read_only_fields = ('token', 'id')
+        # read_only_fields = ('id')
 
     def update(self, instance, validated_data):
         # Выполняет обновление User.

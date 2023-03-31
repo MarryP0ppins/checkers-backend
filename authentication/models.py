@@ -1,24 +1,12 @@
-from datetime import datetime
-from datetime import timedelta
-
-import jwt
-from django.contrib.auth.models import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from time import time
-
-from .managers import UserManager
-
-import os
+from authentication.managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.BigAutoField(primary_key=True)
     username = models.CharField(db_index=True, max_length=16, unique=True)
     email = models.EmailField(db_index=True, unique=True, max_length=32)
-
-    # Для верификации email
-    is_active = models.BooleanField(default=False)
 
     is_staff = models.BooleanField(default=True)
 
@@ -36,15 +24,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         """ Строковое представление модели (отображается в консоли) """
         return self.username
 
-    @property
-    def token(self):
-        """
-        Позволяет получить токен пользователя путем вызова user.token, вместо
-        user._generate_jwt_token(). Декоратор @property выше делает это
-        возможным. token называется "динамическим свойством".
-        """
-        return self._generate_jwt_token()
-
     def get_full_name(self):
         """
         Этот метод требуется Django для таких вещей, как обработка электронной
@@ -56,15 +35,3 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         """ Аналогично методу get_full_name(). """
         return self.username
-
-    def _generate_jwt_token(self):
-        """
-        Генерирует веб-токен JSON, в котором хранится идентификатор этого
-        пользователя, срок действия токена составляет 1 день от создания
-        """
-        print(time() + 8640000)
-        token = jwt.encode({
-            'id': self.pk,
-            'exp': time() + 8640000
-        }, os.getenv('SECRET_KEY'), algorithm='HS256')
-        return token

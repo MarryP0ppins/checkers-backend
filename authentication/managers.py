@@ -2,16 +2,6 @@ from django.contrib.auth.models import BaseUserManager
 
 
 class UserManager(BaseUserManager):
-    """
-    Django требует, чтобы пользовательские `User`
-    определяли свой собственный класс Manager.
-    Унаследовав от BaseUserManager, мы получаем много кода,
-    используемого Django для создания `User`.
-
-    Все, что нам нужно сделать, это переопределить функцию
-    `create_user`, которую мы будем использовать
-    для создания объектов `User`.
-    """
 
     def _create_user(self, username, email, password=None, **extra_fields):
         if not username:
@@ -30,20 +20,12 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, username, email, password=None, **extra_fields):
-        """
-        Создает и возвращает `User` с адресом электронной почты,
-        именем пользователя и паролем.
-        """
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
 
         return self._create_user(username, email, password, **extra_fields)
 
     def create_superuser(self, username, email, password, **extra_fields):
-        """
-        Создает и возвращает пользователя с правами
-        суперпользователя (администратора).
-        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
