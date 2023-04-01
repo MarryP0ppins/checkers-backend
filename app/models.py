@@ -41,5 +41,6 @@ class Move(models.Model):
         User, on_delete=models.CASCADE, related_name='user')
     checker_id = models.DecimalField(max_digits=1, decimal_places=0)
     new_position = models.CharField(max_length=2)
+    is_king = models.BooleanField(default=False)
     is_last_move = models.BooleanField(default=True)
     is_white = models.BooleanField(default=True)
