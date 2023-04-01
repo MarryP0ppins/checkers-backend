@@ -1,13 +1,15 @@
-from rest_framework import viewsets, status, filters
+from rest_framework import status, filters
 from rest_framework.generics import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 from app.permissions import IsSuperUser
 from app.serializers import *
 from authentication.serializers import *
 
 
-class ProfileViewSet(viewsets.ModelViewSet):
+class ProfileViewSet(GenericViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -47,12 +49,19 @@ class ProfileViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GamesViewSet(viewsets.ModelViewSet):
-    queryset = Games.objects.all()
-    serializer_class = GamesSerializer
-    filter_backends = [filters.SearchFilter]
+class GameViewSet(GenericViewSet):
+    queryset = Game.objects.all()
+    serializer_class = GameSerializer
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_fields = ['status']
     search_fields = ['username_1', 'username_2']
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
         serializer = self.serializer_class(
@@ -60,14 +69,14 @@ class GamesViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None, **kwargs):
-        queryset = Games.objects.all()
+        queryset = Game.objects.all()
         games = get_object_or_404(queryset, pk=pk)
         serializer = self.serializer_class(games)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None, **kwargs):
         try:
-            games = Games.objects.get(pk=pk)
+            games = Game.objects.get(pk=pk)
         except games.DoesNotExist:
             return Response(
                 {'message': 'The games info does not exist'}, status=status.HTTP_404_NOT_FOUND)
@@ -78,10 +87,43 @@ class GamesViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk=None, **kwargs):
-        game = Games.objects.get(pk=pk)
+    def destroy(self, request, pk=None, **kwargs):
+        game = Game.objects.get(pk=pk)
         if game:
             game.delete()
+            return Response({"status": "ok"}, status=status.HTTP_200_OK)
+        return Response({"status": "error"},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+
+class MoveViewSet(GenericViewSet):
+    queryset = Move.objects.all()
+    serializer_class = MoveSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['game', 'user', 'checker_id']
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            self.filter_queryset(self.queryset), many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, pk=None, **kwargs):
+        queryset = Move.objects.all()
+        games = get_object_or_404(queryset, pk=pk)
+        serializer = self.serializer_class(games)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def destroy(self, request, pk=None, **kwargs):
+        moves = Move.objects.filter(game=pk)
+        if moves:
+            moves.delete()
             return Response({"status": "ok"}, status=status.HTTP_200_OK)
         return Response({"status": "error"},
                         status=status.HTTP_400_BAD_REQUEST)

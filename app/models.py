@@ -1,5 +1,11 @@
 from django.db import models
 from authentication.models import User
+from django.utils.translation import gettext_lazy as _
+
+
+def get_unknown_user():
+    return User.objects.get_or_create(
+        username='unknown', password='unknown', email='unknown@unknown.unknown', is_staff=False)[0]
 
 
 class Profile(models.Model):
@@ -10,10 +16,30 @@ class Profile(models.Model):
     rating = models.PositiveSmallIntegerField(default=0)
 
 
-class Games(models.Model):
+class Game(models.Model):
+    class GameStatus(models.TextChoices):
+        CREATE = 'CREATE', _('Создана')
+        IN_PROCESS = 'IN_PROCESS', _('В процессе')
+        FINISHED = 'FINISHED', _('Закончена')
+
     id = models.BigAutoField(primary_key=True)
-    username_1 = models.CharField(db_index=True, max_length=16)
-    username_2 = models.CharField(db_index=True, max_length=16)
-    start_at = models.DateTimeField(auto_now_add=True)
-    finish_at = models.DateTimeField(null=True)
-    moves = models.JSONField(default=dict)
+    user_1 = models.ForeignKey(
+        User, on_delete=models.SET(get_unknown_user), related_name='user_1')
+    user_2 = models.ForeignKey(
+        User, on_delete=models.SET(get_unknown_user), related_name='user_2')
+    start_at = models.DateTimeField(null=True, blank=True)
+    finish_at = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(choices=GameStatus.choices, max_length=10)
+    moves = models.JSONField(default=dict, null=True, blank=True)
+
+
+class Move(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    game = models.ForeignKey(
+        Game, on_delete=models.CASCADE, related_name='game')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='user')
+    checker_id = models.DecimalField(max_digits=1, decimal_places=0)
+    new_position = models.CharField(max_length=2)
+    is_last_move = models.BooleanField(default=True)
+    is_white = models.BooleanField(default=True)

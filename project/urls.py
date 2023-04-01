@@ -6,10 +6,12 @@ from app.views import *
 
 router = routers.DefaultRouter()
 router.register(r'profile', ProfileViewSet, basename='profile')
-router.register(r'games', GamesViewSet, basename='games')
+router.register(r'game', GameViewSet, basename='game')
+router.register(r'move', MoveViewSet, basename='move')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # path('move', MoveViewSet.as_view()),
     path('', include(router.urls)),
     path('', include('authentication.urls', namespace='authentication')),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),

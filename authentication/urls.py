@@ -5,15 +5,15 @@ from authentication.views import *
 app_name = 'authentication'
 
 urlpatterns = [
-    path('registration/', RegistrationAPIView.as_view()),
-    path('login/', LoginAPIView.as_view()),
+    path('user/registration/', RegistrationAPIView.as_view()),
+    path('user/login/', LoginAPIView.as_view()),
     path('user/', UserRetrieveUpdateAPIView.as_view()),
     path(
-        'refresh-token/',
+        'user/refresh-token/',
         jwt_views.TokenRefreshView.as_view(),
         name="token_refresh"),
     path(
-        'logout/',
+        'user/logout/',
         jwt_views.TokenBlacklistView.as_view(),
         name="token_blacklist"),
 ]
