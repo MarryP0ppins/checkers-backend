@@ -18,7 +18,7 @@ class Profile(models.Model):
 
 class Game(models.Model):
     class GameStatus(models.TextChoices):
-        CREATE = 'CREATE', _('Создана')
+        CREATED = 'CREATED', _('Создана')
         IN_PROCESS = 'IN_PROCESS', _('В процессе')
         FINISHED = 'FINISHED', _('Закончена')
 
