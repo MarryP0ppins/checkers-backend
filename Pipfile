@@ -17,12 +17,8 @@ python-dotenv = "*"
 pylint = "*"
 autopep8 = "*"
 
-[requires]
-python_version = "3.11"
-python_full_version = "3.11.2"
-
 [scripts]
-update = "bash -c 'pipenv update && pipenv clean'"
+install = "bash -c 'pipenv install --dev && pipenv clean'"
 runserver = "python manage.py runserver"
 inspectdb = "python manage.py inspectdb"
 makemigrations = "python manage.py makemigrations"
