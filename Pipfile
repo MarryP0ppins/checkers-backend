@@ -12,7 +12,6 @@ drf-spectacular = "==0.24.2"
 django-cors-headers = "==3.13.0"
 mysqlclient = "2.1.1"
 python-dotenv = "*"
-pipenv = "*"
 
 [dev-packages]
 pylint = "*"
