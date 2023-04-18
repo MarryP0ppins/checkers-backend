@@ -39,7 +39,7 @@ class Move(models.Model):
         Game, on_delete=models.CASCADE, related_name='game')
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='user')
-    checker_id = models.DecimalField(max_digits=1, decimal_places=0)
+    checker_id = models.PositiveSmallIntegerField()
     new_position = models.CharField(max_length=2)
     is_king = models.BooleanField(default=False)
     is_last_move = models.BooleanField(default=True)

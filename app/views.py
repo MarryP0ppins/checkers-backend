@@ -1,12 +1,13 @@
 from rest_framework import status, filters
 from rest_framework.generics import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from app.permissions import IsSuperUser
 from app.serializers import *
 from authentication.serializers import *
+from app.utils import create_moves_json
 
 
 class ProfileViewSet(GenericViewSet):
@@ -101,7 +102,7 @@ class MoveViewSet(GenericViewSet):
     serializer_class = MoveSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['game', 'user', 'checker_id']
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -123,6 +124,9 @@ class MoveViewSet(GenericViewSet):
     def destroy(self, request, pk=None, **kwargs):
         moves = Move.objects.filter(game=pk)
         if moves:
+            game = Game.objects.get(pk=pk)
+            game.moves = create_moves_json(moves)
+            game.save()
             moves.delete()
             return Response({"status": "ok"}, status=status.HTTP_200_OK)
         return Response({"status": "error"},
