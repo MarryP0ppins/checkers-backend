@@ -7,7 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from app.permissions import IsSuperUser
 from app.serializers import *
 from authentication.serializers import *
-from app.utils import create_moves_json
+from app.utils import create_moves_json, create_start_moves
 
 
 class ProfileViewSet(GenericViewSet):
@@ -57,11 +57,18 @@ class GameViewSet(GenericViewSet):
     filterset_fields = ['status']
     search_fields = ['username_1', 'username_2']
     permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        Move.objects.bulk_create(
+            create_start_moves(
+                Game.objects.get(pk=serializer.data.get('id')),
+                User.objects.get(pk=serializer.data.get('user_1')),
+                User.objects.get(pk=serializer.data.get('user_2'))
+            ))
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):

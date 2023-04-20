@@ -29,7 +29,7 @@ class Game(models.Model):
         User, on_delete=models.SET(get_unknown_user), related_name='user_2')
     start_at = models.DateTimeField(null=True, blank=True)
     finish_at = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(choices=GameStatus.choices, max_length=10)
+    status = models.CharField(choices=GameStatus.choices, max_length=10, default=GameStatus.CREATED)
     moves = models.JSONField(default=dict, null=True, blank=True)
 
 
