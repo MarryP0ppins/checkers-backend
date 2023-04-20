@@ -5,7 +5,10 @@ from django.utils.translation import gettext_lazy as _
 
 def get_unknown_user():
     return User.objects.get_or_create(
-        username='unknown', password='unknown', email='unknown@unknown.unknown', is_staff=False)[0]
+        username='unknown',
+        password='unknown',
+        email='unknown@unknown.unknown',
+        is_staff=False)[0]
 
 
 class Profile(models.Model):
@@ -27,9 +30,11 @@ class Game(models.Model):
         User, on_delete=models.SET(get_unknown_user), related_name='user_1')
     user_2 = models.ForeignKey(
         User, on_delete=models.SET(get_unknown_user), related_name='user_2')
+    user_1_turn = models.BooleanField(default=True)
     start_at = models.DateTimeField(null=True, blank=True)
     finish_at = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(choices=GameStatus.choices, max_length=10, default=GameStatus.CREATED)
+    status = models.CharField(
+        choices=GameStatus.choices, max_length=10, default=GameStatus.CREATED)
     moves = models.JSONField(default=dict, null=True, blank=True)
 
 
@@ -40,7 +45,7 @@ class Move(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='user')
     checker_id = models.PositiveSmallIntegerField()
-    new_position = models.CharField(max_length=2)
+    new_positions = models.JSONField(default=list, null=True, blank=True)
     is_king = models.BooleanField(default=False)
     is_last_move = models.BooleanField(default=True)
     is_white = models.BooleanField(default=True)

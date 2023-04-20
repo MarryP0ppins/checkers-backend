@@ -32,6 +32,7 @@ class GameSerializer(serializers.ModelSerializer):
             "id",
             "user_1",
             "user_2",
+            "user_1_turn",
             "start_at",
             "finish_at",
             "status",
@@ -43,4 +44,4 @@ class MoveSerializer(serializers.ModelSerializer):
         model = Move
 
         fields = ["id", "game", "user", "checker_id",
-                  "new_position", "is_last_move", "is_white"]
+                  "new_positions", "is_last_move", "is_white", "is_king"]

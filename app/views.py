@@ -57,7 +57,7 @@ class GameViewSet(GenericViewSet):
     filterset_fields = ['status']
     search_fields = ['username_1', 'username_2']
     permission_classes = [IsAuthenticatedOrReadOnly]
-    permission_classes = [AllowAny]
+    #permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
