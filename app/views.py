@@ -115,6 +115,9 @@ class MoveViewSet(GenericViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        game = Game.objects.get(pk=serializer.data.get('game_id'))
+        game.user_1_turn = not game.user_1_turn
+        game.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
