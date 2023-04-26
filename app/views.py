@@ -7,7 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 from app.permissions import IsSuperUser
 from app.serializers import *
 from authentication.serializers import *
-from app.utils import create_moves_json, create_start_moves
+from app.utils import create_moves_json
 
 
 class ProfileViewSet(GenericViewSet):
@@ -63,12 +63,6 @@ class GameViewSet(GenericViewSet):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        Move.objects.bulk_create(
-            create_start_moves(
-                Game.objects.get(pk=serializer.data.get('id')),
-                User.objects.get(pk=serializer.data.get('user_1')),
-                User.objects.get(pk=serializer.data.get('user_2'))
-            ))
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):

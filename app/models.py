@@ -26,6 +26,7 @@ class Game(models.Model):
         FINISHED = 'FINISHED', _('Закончена')
 
     id = models.BigAutoField(primary_key=True)
+    uuid = models.CharField(max_length=36, default='')
     user_1 = models.ForeignKey(
         User, on_delete=models.SET(get_unknown_user), related_name='user_1')
     user_2 = models.ForeignKey(

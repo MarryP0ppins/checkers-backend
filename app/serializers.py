@@ -30,6 +30,7 @@ class GameSerializer(serializers.ModelSerializer):
 
         fields = [
             "id",
+            "uuid",
             "user_1",
             "user_2",
             "user_1_turn",
