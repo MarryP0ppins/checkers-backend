@@ -66,14 +66,14 @@ class GameViewSet(GenericViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
-        serializer = self.serializer_class(
+        serializer = GameGetSerializer(
             self.filter_queryset(self.queryset), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None, **kwargs):
         queryset = Game.objects.all()
         games = get_object_or_404(queryset, pk=pk)
-        serializer = self.serializer_class(games)
+        serializer = GameGetSerializer(games)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None, **kwargs):

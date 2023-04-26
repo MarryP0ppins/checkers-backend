@@ -32,6 +32,8 @@ class Game(models.Model):
     user_2 = models.ForeignKey(
         User, on_delete=models.SET(get_unknown_user), related_name='user_2')
     user_1_turn = models.BooleanField(default=True)
+    user_1_win = models.BooleanField(blank=True, null=True)
+    user_1_points = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     start_at = models.DateTimeField(null=True, blank=True)
     finish_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(

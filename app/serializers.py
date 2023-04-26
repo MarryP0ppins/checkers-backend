@@ -16,14 +16,39 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class GameSerializer(serializers.ModelSerializer):
 
-    """user_1 = serializers.SerializerMethodField('_get_username_1')
-    user_2 = serializers.SerializerMethodField('_get_username_2')
+    class Meta:
+        model = Game
 
-    def _get_username_1(self, data):
-        return f'{data.user_1.username}'
+        fields = [
+            "id",
+            "uuid",
+            "user_1",
+            "user_2",
+            "user_1_turn",
+            "user_1_win",
+            "user_1_points",
+            "start_at",
+            "finish_at",
+            "status",
+            "moves"]
 
-    def _get_username_2(self, data):
-        return f'{data.user_2.username}'"""
+
+class GameGetSerializer(serializers.ModelSerializer):
+
+    user_1 = serializers.SerializerMethodField('_get_user_1')
+    user_2 = serializers.SerializerMethodField('_get_user_2')
+
+    def _get_user_1(self, data):
+        return {
+            'id': data.user_1.id,
+            'username': data.user_1.username
+        }
+
+    def _get_user_2(self, data):
+        return {
+            'id': data.user_2.id,
+            'username': data.user_2.username
+        }
 
     class Meta:
         model = Game
@@ -34,6 +59,8 @@ class GameSerializer(serializers.ModelSerializer):
             "user_1",
             "user_2",
             "user_1_turn",
+            "user_1_win",
+            "user_1_points",
             "start_at",
             "finish_at",
             "status",
@@ -45,4 +72,4 @@ class MoveSerializer(serializers.ModelSerializer):
         model = Move
 
         fields = ["id", "game", "user", "checker_id",
-                  "new_positions", "is_last_move", "is_white", "is_king"]
+                  "new_positions", "is_white", "is_king"]
