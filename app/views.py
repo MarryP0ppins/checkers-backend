@@ -55,7 +55,7 @@ class GameViewSet(GenericViewSet):
     serializer_class = GameSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status']
-    search_fields = ['username_1', 'username_2']
+    search_fields = ['user_1__username', 'user_2__username']
     permission_classes = [IsAuthenticatedOrReadOnly]
     #permission_classes = [AllowAny]
 
