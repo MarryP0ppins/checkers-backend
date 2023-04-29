@@ -13,9 +13,9 @@ from app.utils import create_moves_json
 class ProfileViewSet(GenericViewSet):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    ordering_fields = ['games', 'rating', 'wins']
-    ordering = ['-rating', '-wins', 'games']
+    filter_backends = [filters.SearchFilter]
+    ordering_fields = ['games', 'rating', 'wins', 'username']
+    ordering = ['-rating', '-wins', 'games', 'username']
     search_fields = ['user__username']
 
     def get_permissions(self):
@@ -106,10 +106,14 @@ class MoveViewSet(GenericViewSet):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
+        last_move = Move.objects.filter(game_id=request.data.get('game'), checker_id=request.data.get('checker_id')).last()
+        if last_move:
+            last_move.is_last_move = False
+            last_move.save()
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        game = Game.objects.get(pk=serializer.data.get('game_id'))
+        game = Game.objects.get(pk=serializer.data.get('game'))
         game.user_1_turn = not game.user_1_turn
         game.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
