@@ -17,14 +17,8 @@ class ProfileViewSet(GenericViewSet):
     ordering_fields = ['games', 'rating', 'wins', 'username']
     ordering = ['-rating', '-wins', 'games', 'username']
     search_fields = ['user__username']
-
-    def get_permissions(self):
-        if self.action in ['list', 'retrieve', 'partial_update']:
-            permission_classes = [IsAuthenticatedOrReadOnly]
-        else:
-            permission_classes = [IsSuperUser]
-        return [permission() for permission in permission_classes]
-
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    
     def list(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             self.filter_queryset(self.queryset), many=True)
@@ -56,8 +50,8 @@ class GameViewSet(GenericViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status']
     search_fields = ['user_1__username', 'user_2__username']
-    #permission_classes = [IsAuthenticatedOrReadOnly]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    #permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
