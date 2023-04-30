@@ -56,8 +56,8 @@ class GameViewSet(GenericViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status']
     search_fields = ['user_1__username', 'user_2__username']
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    #permission_classes = [AllowAny]
+    #permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -78,12 +78,17 @@ class GameViewSet(GenericViewSet):
 
     def partial_update(self, request, pk=None, **kwargs):
         try:
-            games = Game.objects.get(pk=pk)
-        except games.DoesNotExist:
+            game = Game.objects.get(pk=pk)
+        except game.DoesNotExist:
             return Response(
                 {'message': 'The games info does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        if request.data.get('status') == 'FINISHED':
+            moves = Move.objects.filter(game=pk)
+            if moves:
+                game.moves = create_moves_json(moves)
+                moves.delete()
         serializer = self.serializer_class(
-            games, data=request.data, partial=True)
+            game, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -106,7 +111,8 @@ class MoveViewSet(GenericViewSet):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
-        last_move = Move.objects.filter(game_id=request.data.get('game'), checker_id=request.data.get('checker_id')).last()
+        last_move = Move.objects.filter(game_id=request.data.get(
+            'game'), checker_id=request.data.get('checker_id')).last()
         if last_move:
             last_move.is_last_move = False
             last_move.save()
@@ -130,12 +136,9 @@ class MoveViewSet(GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk=None, **kwargs):
-        moves = Move.objects.filter(game=pk)
-        if moves:
-            game = Game.objects.get(pk=pk)
-            game.moves = create_moves_json(moves)
-            game.save()
-            moves.delete()
+        move = Move.objects.filter(pk=pk)
+        if move:
+            move.delete()
             return Response({"status": "ok"}, status=status.HTTP_200_OK)
         return Response({"status": "error"},
                         status=status.HTTP_400_BAD_REQUEST)
