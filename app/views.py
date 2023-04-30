@@ -82,13 +82,13 @@ class GameViewSet(GenericViewSet):
         except game.DoesNotExist:
             return Response(
                 {'message': 'The games info does not exist'}, status=status.HTTP_404_NOT_FOUND)
-        if request.data.get('status') == 'FINISHED':
+        serializer = self.serializer_class(
+            game, data=request.data, partial=True)
+        if serializer.data.get('status') == 'FINISHED':
             moves = Move.objects.filter(game=pk)
             if moves:
                 game.moves = create_moves_json(moves)
                 moves.delete()
-        serializer = self.serializer_class(
-            game, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -134,11 +134,3 @@ class MoveViewSet(GenericViewSet):
         games = get_object_or_404(queryset, pk=pk)
         serializer = self.serializer_class(games)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def destroy(self, request, pk=None, **kwargs):
-        move = Move.objects.filter(pk=pk)
-        if move:
-            move.delete()
-            return Response({"status": "ok"}, status=status.HTTP_200_OK)
-        return Response({"status": "error"},
-                        status=status.HTTP_400_BAD_REQUEST)
