@@ -24,6 +24,7 @@ class Game(models.Model):
         CREATED = 'CREATED'
         IN_PROCESS = 'IN_PROCESS'
         FINISHED = 'FINISHED'
+
     class WinnerStatus(models.TextChoices):
         USER_1 = 'USER_1'
         USER_2 = 'USER_2'

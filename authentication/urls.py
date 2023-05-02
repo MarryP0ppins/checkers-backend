@@ -10,7 +10,7 @@ urlpatterns = [
     path('user/', UserRetrieveUpdateAPIView.as_view()),
     path(
         'user/refresh-token/',
-        jwt_views.TokenRefreshView.as_view(),
+        CustomTokenRefreshView.as_view(),
         name="token_refresh"),
     path(
         'user/logout/',

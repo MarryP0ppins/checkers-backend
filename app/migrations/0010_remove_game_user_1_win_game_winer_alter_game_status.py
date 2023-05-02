@@ -17,11 +17,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='game',
             name='winer',
-            field=models.CharField(blank=True, choices=[('USER_1', 'User 1'), ('USER_2', 'User 2'), ('DRAW', 'Draw')], max_length=6),
+            field=models.CharField(
+                blank=True, choices=[
+                    ('USER_1', 'User 1'), ('USER_2', 'User 2'), ('DRAW', 'Draw')], max_length=6),
         ),
         migrations.AlterField(
             model_name='game',
             name='status',
-            field=models.CharField(choices=[('CREATED', 'Created'), ('IN_PROCESS', 'In Process'), ('FINISHED', 'Finished')], default='CREATED', max_length=10),
+            field=models.CharField(choices=[('CREATED', 'Created'), ('IN_PROCESS', 'In Process'),
+                                   ('FINISHED', 'Finished')], default='CREATED', max_length=10),
         ),
     ]

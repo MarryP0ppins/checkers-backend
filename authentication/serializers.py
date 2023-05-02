@@ -3,6 +3,8 @@ from django.contrib.auth.models import update_last_login
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from app.models import Profile
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.state import token_backend
 from authentication.models import User
 
 
@@ -51,8 +53,8 @@ class LoginSerializer(serializers.Serializer):
     # Ignore these fields if they are included in the request.
     id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(max_length=255, read_only=True)
-    access_token = serializers.CharField(max_length=255, read_only=True)
-    refresh_token = serializers.CharField(max_length=255, read_only=True)
+    access = serializers.CharField(max_length=255, read_only=True)
+    refresh = serializers.CharField(max_length=255, read_only=True)
 
     def validate(self, data) -> User:
         # Validates user data.
@@ -86,8 +88,8 @@ class LoginSerializer(serializers.Serializer):
             'id': user.id,
             'email': user.email,
             'username': user.username,
-            'access_token': access_token,
-            'refresh_token': refresh_token,
+            'access': access_token,
+            'refresh': refresh_token,
         }
 
         return validation
@@ -151,3 +153,22 @@ class UserRetrieveUpdateSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class CustomTokenRefreshSerializer(TokenRefreshSerializer):
+
+    # Ignore these fields if they are included in the request.
+    id = serializers.IntegerField(read_only=True)
+    email = serializers.EmailField(max_length=255, read_only=True)
+    username = serializers.CharField(max_length=255, read_only=True)
+    access = serializers.CharField(max_length=255, read_only=True)
+    refresh = serializers.CharField(max_length=255)
+
+    def validate(self, attrs):
+        data = super(CustomTokenRefreshSerializer, self).validate(attrs)
+        decoded_payload = token_backend.decode(data['access'], verify=True)
+        user_uid = decoded_payload['user_id']
+        user = User.objects.get(pk=user_uid)
+        # add filter query
+        data.update({'id': user_uid, 'username': user.username, 'email': user.email})
+        return data

@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.views import APIView
 from authentication.serializers import *
 
@@ -61,3 +62,10 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateDestroyAPIView):
             return Response({"status": "ok"}, status=status.HTTP_200_OK)
         return Response({"status": "error"},
                         status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenRefreshView(TokenRefreshView):
+    """
+    Custom Refresh token View
+    """
+    serializer_class = CustomTokenRefreshSerializer
