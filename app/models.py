@@ -21,9 +21,13 @@ class Profile(models.Model):
 
 class Game(models.Model):
     class GameStatus(models.TextChoices):
-        CREATED = 'CREATED', _('Создана')
-        IN_PROCESS = 'IN_PROCESS', _('В процессе')
-        FINISHED = 'FINISHED', _('Закончена')
+        CREATED = 'CREATED'
+        IN_PROCESS = 'IN_PROCESS'
+        FINISHED = 'FINISHED'
+    class WinnerStatus(models.TextChoices):
+        USER_1 = 'USER_1'
+        USER_2 = 'USER_2'
+        DRAW = 'DRAW'
 
     id = models.BigAutoField(primary_key=True)
     uuid = models.CharField(max_length=36, default='')
@@ -32,7 +36,8 @@ class Game(models.Model):
     user_2 = models.ForeignKey(
         User, on_delete=models.SET(get_unknown_user), related_name='user_2')
     user_1_turn = models.BooleanField(default=True)
-    user_1_win = models.BooleanField(blank=True, null=True)
+    winner = models.CharField(
+        choices=WinnerStatus.choices, max_length=6, blank=True)
     user_1_points = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     user_2_points = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     start_at = models.DateTimeField(null=True, blank=True)

@@ -18,7 +18,7 @@ class ProfileViewSet(GenericViewSet):
     ordering = ['-rating', '-wins', 'games', 'username']
     search_fields = ['user__username']
     permission_classes = [IsAuthenticatedOrReadOnly]
-    
+
     def list(self, request, *args, **kwargs):
         serializer = self.serializer_class(
             self.filter_queryset(self.queryset), many=True)
@@ -51,7 +51,7 @@ class GameViewSet(GenericViewSet):
     filterset_fields = ['status']
     search_fields = ['user_1__username', 'user_2__username']
     permission_classes = [IsAuthenticatedOrReadOnly]
-    #permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -83,6 +83,20 @@ class GameViewSet(GenericViewSet):
             if moves:
                 game.moves = create_moves_json(moves)
                 moves.delete()
+            profile_1 = Profile.objects.get(user__id=game.user_1)
+            profile_2 = Profile.objects.get(user__id=game.user_2)
+            if profile_1:
+                profile_1.rating = profile_1.rating + \
+                    serializer.data.get('user_1_points')
+                profile_1.games = profile_1.games + 1
+                if serializer.data.get('winner') == 'USER_1':
+                    profile_1.wins = profile_1.wins + 1
+            if profile_2:
+                profile_2.rating = profile_2.rating + \
+                    serializer.data.get('user_2_points')
+                profile_2.games = profile_2.games + 1
+                if not serializer.data.get('winner') == 'USER_2':
+                    profile_1.wins = profile_1.wins + 1
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

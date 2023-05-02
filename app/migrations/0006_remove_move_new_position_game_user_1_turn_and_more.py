@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='game',
             name='status',
-            field=models.CharField(choices=[('CREATED', 'Создана'), ('IN_PROCESS', 'В процессе'), ('FINISHED', 'Закончена')], default='CREATED', max_length=10),
+            field=models.CharField(choices=[('CREATED', 'Создана'), ('IN_PROCESS', 'В процессе'),
+                                   ('FINISHED', 'Закончена')], default='CREATED', max_length=10),
         ),
     ]
