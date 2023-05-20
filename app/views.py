@@ -35,7 +35,7 @@ class ProfileViewSet(GenericViewSet):
             user_info = Profile.objects.get(pk=pk)
         except user_info.DoesNotExist:
             return Response(
-                {'message': 'The user info does not exist'}, status=status.HTTP_404_NOT_FOUND)
+                {'message': 'Данного пользователя не существует'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(
             user_info, data=request.data, partial=True)
         if serializer.is_valid():
@@ -75,7 +75,7 @@ class GameViewSet(GenericViewSet):
             game = Game.objects.get(pk=pk)
         except game.DoesNotExist:
             return Response(
-                {'message': 'The games info does not exist'}, status=status.HTTP_404_NOT_FOUND)
+                {'message': 'Данной игры не существует'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(
             game, data=request.data, partial=True)
         if serializer.data.get('status') == 'FINISHED':

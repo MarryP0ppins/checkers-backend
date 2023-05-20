@@ -33,7 +33,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         password2 = validated_data.pop("password2")
 
         if password != password2:
-            raise serializers.ValidationError('Passwords must match')
+            raise serializers.ValidationError('Пароли не совпадают')
 
         user = User.objects.create_user(**validated_data)
         profile = Profile.objects.create(user=user)
@@ -64,18 +64,14 @@ class LoginSerializer(serializers.Serializer):
 
         if email is None:
             raise serializers.ValidationError(
-                'An email address is required to log in.'
+                'Пользователя с такой почтой не существует'
             )
 
-        if password is None:
-            raise serializers.ValidationError(
-                'A password is required to log in.'
-            )
         user = authenticate(email=email, password=password)
 
         if user is None:
             raise serializers.ValidationError(
-                'A user with this email and password was not found.'
+                'Пользователя с такой почтой или паролем не существует'
             )
 
         refresh = RefreshToken.for_user(user)
