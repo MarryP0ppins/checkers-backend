@@ -1,0 +1,39 @@
+/*the Python compiler generates a module with a static descriptor of each message type in 
+your .proto, which is then used with a metaclass to create the necessary 
+Python data access class at runtime. */
+syntax = "proto3";
+
+service WsProto{
+    rpc createGameEvent (Post) returns (Game)
+    rpc editGameEvent (NewPost) returns (Game)
+    rpc createMoveEvent (MovePost) returns (CheckerMove)
+}
+
+
+enum Status {
+    CREATED = 0;
+    IN_PROCESS = 1;
+    FINISHED = 3;
+}
+
+message Post {
+    Status status = 1;
+    int32 user_1 = 2;
+    int32 user_2 = 3;
+}
+
+message NewPost {
+    Post post = 1;
+    int32 user_1_points = 2;
+    Status status = 3;
+    string finish_at = 4;
+    user_1_turn = 5;
+}
+
+message MovePost {
+    int32 user = 1;
+    int32 checker_id = 2;
+    repeated string new_positions = 3;
+    bool is_king = 4;
+    bool is_white = 5;
+}
