@@ -4,9 +4,9 @@ Python data access class at runtime. */
 syntax = "proto3";
 
 service WsProto{
-    rpc createGameEvent (Post) returns (Game)
-    rpc editGameEvent (NewPost) returns (Game)
-    rpc createMoveEvent (MovePost) returns (CheckerMove)
+    rpc createGameEvent (Post) returns (GameResponce);
+    rpc editGameEvent (NewPost) returns (GameResponce);
+    rpc createMoveEvent (MovePost) returns (CheckerMoveResponce);
 }
 
 
@@ -27,7 +27,7 @@ message NewPost {
     int32 user_1_points = 2;
     Status status = 3;
     string finish_at = 4;
-    user_1_turn = 5;
+    bool user_1_turn = 5;
 }
 
 message MovePost {
@@ -36,4 +36,12 @@ message MovePost {
     repeated string new_positions = 3;
     bool is_king = 4;
     bool is_white = 5;
+}
+
+message GameResponce {
+    string message = 1;
+}
+
+message CheckerMoveResponce {
+    string message = 1;
 }
