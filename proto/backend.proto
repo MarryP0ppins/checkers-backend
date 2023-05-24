@@ -1,0 +1,4 @@
+/*the Python compiler generates a module with a static descriptor of each message type in 
+your .proto, which is then used with a metaclass to create the necessary 
+Python data access class at runtime. */
+syntax = "proto3";
