@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'corsheaders',
-    'django_grpc_framework',
     'rest_framework_simplejwt.token_blacklist'
 ]
 
