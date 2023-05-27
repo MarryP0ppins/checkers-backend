@@ -128,11 +128,12 @@ class MoveViewSet(GenericViewSet):
         if last_move:
             last_move.is_last_move = False
             last_move.save()
-        killed = request.data.pop('killed')
+        if request.data.get('killed'):
+            killed = request.data.pop('killed')
+            Move.objects.filter(game=request.data.get('game'), checker_id__in=killed).update(is_dead=True)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        Move.objects.filter(id__in = killed).update(is_dead=True)
         game = Game.objects.get(pk=serializer.data.get('game'))
         game.user_1_turn = not game.user_1_turn
         game.save()
