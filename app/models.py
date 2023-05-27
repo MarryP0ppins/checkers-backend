@@ -58,3 +58,4 @@ class Move(models.Model):
     is_king = models.BooleanField(default=False)
     is_last_move = models.BooleanField(default=True)
     is_white = models.BooleanField(default=True)
+    is_dead = models.BooleanField(default=False)

@@ -60,14 +60,14 @@ class GameViewSet(GenericViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
-        serializer = GameGetSerializer(
+        serializer = self.serializer_class(
             self.filter_queryset(self.queryset), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, pk=None, **kwargs):
         queryset = Game.objects.all()
         games = get_object_or_404(queryset, pk=pk)
-        serializer = GameGetSerializer(games)
+        serializer = self.serializer_class(games)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def partial_update(self, request, pk=None, **kwargs):
@@ -78,32 +78,35 @@ class GameViewSet(GenericViewSet):
                 {'message': 'Данной игры не существует'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(
             game, data=request.data, partial=True)
-        if serializer.data.get('status') == 'FINISHED':
-            moves = Move.objects.filter(game=pk)
-            if moves:
-                game.moves = create_moves_json(moves)
-                moves.delete()
-            profile_1 = Profile.objects.get(user__id=game.user_1)
-            profile_2 = Profile.objects.get(user__id=game.user_2)
-            if profile_1:
-                profile_1.rating = profile_1.rating + \
-                    serializer.data.get('user_1_points')
-                profile_1.games = profile_1.games + 1
-                if serializer.data.get('winner') == 'USER_1':
-                    profile_1.wins = profile_1.wins + 1
-            if profile_2:
-                profile_2.rating = profile_2.rating + \
-                    serializer.data.get('user_2_points')
-                profile_2.games = profile_2.games + 1
-                if not serializer.data.get('winner') == 'USER_2':
-                    profile_1.wins = profile_1.wins + 1
         if serializer.is_valid():
+            if serializer.validated_data.get('status') == 'FINISHED':
+                moves = Move.objects.filter(game=pk)
+                if moves:
+                    game.moves = create_moves_json(moves)
+                    moves.delete()
+                profile_1 = Profile.objects.get(user__id=game.user_1_id)
+                profile_2 = Profile.objects.get(user__id=game.user_2_id)
+                if profile_1:
+                    profile_1.rating = profile_1.rating + \
+                        serializer.validated_data.get('user_1_points')
+                    profile_1.games = profile_1.games + 1
+                    if serializer.validated_data.get('winner') == 'USER_1':
+                        profile_1.wins = profile_1.wins + 1
+                if profile_2:
+                    profile_2.rating = profile_2.rating + \
+                        serializer.validated_data.get('user_2_points')
+                    profile_2.games = profile_2.games + 1
+                    if not serializer.validated_data.get('winner') == 'USER_2':
+                        profile_1.wins = profile_1.wins + 1
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None, **kwargs):
         game = Game.objects.get(pk=pk)
+        moves = Move.objects.filter(game=pk)
+        if moves:
+            moves.delete()
         if game:
             game.delete()
             return Response({"status": "ok"}, status=status.HTTP_200_OK)
@@ -115,7 +118,8 @@ class MoveViewSet(GenericViewSet):
     queryset = Move.objects.all()
     serializer_class = MoveSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['game', 'user', 'checker_id']
+    filterset_fields = ['game', 'user', 'checker_id', 'is_last_move']
+    ordering = ['id']
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
@@ -124,9 +128,11 @@ class MoveViewSet(GenericViewSet):
         if last_move:
             last_move.is_last_move = False
             last_move.save()
+        killed = request.data.pop('killed')
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        Move.objects.filter(id__in = killed).update(is_dead=True)
         game = Game.objects.get(pk=serializer.data.get('game'))
         game.user_1_turn = not game.user_1_turn
         game.save()
