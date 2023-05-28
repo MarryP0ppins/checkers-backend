@@ -120,7 +120,7 @@ class MoveViewSet(GenericViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['game', 'user', 'checker_id', 'is_last_move']
     ordering = ['id']
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         last_move = Move.objects.filter(game_id=request.data.get(
