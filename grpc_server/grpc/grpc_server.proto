@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package project.grpc_server;
+package grpc_server;
 
 //import "google/protobuf/struct.proto";
 

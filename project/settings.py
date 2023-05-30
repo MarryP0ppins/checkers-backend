@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'grpc_server',
     'django_grpc'
-    # 'django_socio_grpc',
 ]
 
 GRPCSERVER = {
@@ -37,9 +36,6 @@ GRPCSERVER = {
     'maximum_concurrent_rpcs': None,
 }
 
-# GRPC_FRAMEWORK = {
-#     "ROOT_HANDLERS_HOOK": 'grpc_server.handlers.grpc_handlers'
-# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

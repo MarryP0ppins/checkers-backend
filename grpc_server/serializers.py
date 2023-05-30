@@ -1,11 +1,9 @@
 from rest_framework import serializers
 from app.models import Game, Move
-#from django_socio_grpc import proto_serializers
 from app.utils import create_moves_json
 from authentication.models import User
 from authentication.serializers import UserSerializer
 from grpc_server.grpc.grpc_server_pb2 import GameResponse, MoveResponse
-#from asgiref.sync import sync_to_async
 from datetime import datetime
 
 
@@ -17,9 +15,9 @@ class CreateGameProtoSerializer(serializers.ModelSerializer):
     user_1_info = UserSerializer(read_only=True)
     user_2_info = UserSerializer(read_only=True)
     user_1_points = serializers.DecimalField(
-        max_digits=4, decimal_places=2, coerce_to_string=False)
+        max_digits=4, decimal_places=2, coerce_to_string=False, required=False)
     user_2_points = serializers.DecimalField(
-        max_digits=4, decimal_places=2, coerce_to_string=False)
+        max_digits=4, decimal_places=2, coerce_to_string=False, required=False)
     moves = serializers.DictField(child=serializers.ListField(child=serializers.ListField(
         child=serializers.CharField(max_length=2))), read_only=True, required=False)
     start_at = serializers.CharField(read_only=True)
@@ -68,9 +66,8 @@ class CreateGameProtoSerializer(serializers.ModelSerializer):
 
         user_1 = User.objects.get(pk=instance.user_1.id)
         user_2 = User.objects.get(pk=instance.user_2.id)
-
         moves = Move.objects.filter(game=instance.id)
-        print('-----')
+        
         if moves:
             instance.moves = create_moves_json(
                 moves, user_1.username, user_2.username)
@@ -102,7 +99,7 @@ class CreateMoveProtoSerializer(serializers.ModelSerializer):
         fields = ["id", "game", "user", "checker_id", "new_positions",
                   "is_white", "is_king", "is_dead", "is_last_move"]
 
-    def create(self, validated_data):
-        game = Move.objects.create(**validated_data)
-        print(game.new_positions)
-        return game
+    # def create(self, validated_data):
+    #     game = Move.objects.create(**validated_data)
+    #     print(game.new_positions)
+    #     return game

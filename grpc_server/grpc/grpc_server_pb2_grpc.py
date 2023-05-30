@@ -17,12 +17,12 @@ class GameControllerStub(object):
             channel: A grpc.Channel.
         """
         self.Create = channel.unary_unary(
-                '/project.grpc_server.GameController/Create',
+                '/grpc_server.GameController/Create',
                 request_serializer=grpc__server_dot_grpc_dot_grpc__server__pb2.CreateGameRequest.SerializeToString,
                 response_deserializer=grpc__server_dot_grpc_dot_grpc__server__pb2.GameResponse.FromString,
                 )
         self.PartialUpdate = channel.unary_unary(
-                '/project.grpc_server.GameController/PartialUpdate',
+                '/grpc_server.GameController/PartialUpdate',
                 request_serializer=grpc__server_dot_grpc_dot_grpc__server__pb2.CreateGamePartialUpdateRequest.SerializeToString,
                 response_deserializer=grpc__server_dot_grpc_dot_grpc__server__pb2.GameResponse.FromString,
                 )
@@ -60,7 +60,7 @@ def add_GameControllerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'project.grpc_server.GameController', rpc_method_handlers)
+            'grpc_server.GameController', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -81,7 +81,7 @@ class GameController(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/project.grpc_server.GameController/Create',
+        return grpc.experimental.unary_unary(request, target, '/grpc_server.GameController/Create',
             grpc__server_dot_grpc_dot_grpc__server__pb2.CreateGameRequest.SerializeToString,
             grpc__server_dot_grpc_dot_grpc__server__pb2.GameResponse.FromString,
             options, channel_credentials,
@@ -98,7 +98,7 @@ class GameController(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/project.grpc_server.GameController/PartialUpdate',
+        return grpc.experimental.unary_unary(request, target, '/grpc_server.GameController/PartialUpdate',
             grpc__server_dot_grpc_dot_grpc__server__pb2.CreateGamePartialUpdateRequest.SerializeToString,
             grpc__server_dot_grpc_dot_grpc__server__pb2.GameResponse.FromString,
             options, channel_credentials,
@@ -115,7 +115,7 @@ class MoveControllerStub(object):
             channel: A grpc.Channel.
         """
         self.Create = channel.unary_unary(
-                '/project.grpc_server.MoveController/Create',
+                '/grpc_server.MoveController/Create',
                 request_serializer=grpc__server_dot_grpc_dot_grpc__server__pb2.CreateMoveRequest.SerializeToString,
                 response_deserializer=grpc__server_dot_grpc_dot_grpc__server__pb2.MoveResponse.FromString,
                 )
@@ -140,7 +140,7 @@ def add_MoveControllerServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'project.grpc_server.MoveController', rpc_method_handlers)
+            'grpc_server.MoveController', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -159,7 +159,7 @@ class MoveController(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/project.grpc_server.MoveController/Create',
+        return grpc.experimental.unary_unary(request, target, '/grpc_server.MoveController/Create',
             grpc__server_dot_grpc_dot_grpc__server__pb2.CreateMoveRequest.SerializeToString,
             grpc__server_dot_grpc_dot_grpc__server__pb2.MoveResponse.FromString,
             options, channel_credentials,

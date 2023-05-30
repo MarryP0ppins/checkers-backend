@@ -3,7 +3,6 @@ from django.urls import include, path
 from rest_framework import routers
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from app.views import *
-#from grpc_server.handlers import grpc_handlers as grpc__handlers
 
 router = routers.DefaultRouter()
 router.register(r'profile', ProfileViewSet, basename='profile')
@@ -21,6 +20,3 @@ urlpatterns = [
         name="swagger-ui",
     ),
 ]
-
-# def grpc_handlers(server):
-#     grpc__handlers(server)
