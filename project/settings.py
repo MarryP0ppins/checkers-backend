@@ -26,8 +26,20 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'corsheaders',
-    'rest_framework_simplejwt.token_blacklist'
+    'rest_framework_simplejwt.token_blacklist',
+    'grpc_server',
+    'django_grpc'
+    # 'django_socio_grpc',
 ]
+
+GRPCSERVER = {
+    'servicers': ['grpc_server.server.grpc_hook'],  # see `grpc_hook()` below
+    'maximum_concurrent_rpcs': None,
+}
+
+# GRPC_FRAMEWORK = {
+#     "ROOT_HANDLERS_HOOK": 'grpc_server.handlers.grpc_handlers'
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

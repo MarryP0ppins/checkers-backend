@@ -8,6 +8,12 @@ from rest_framework_simplejwt.state import token_backend
 from authentication.models import User
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "username"]
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
     """
     Creates a new user.

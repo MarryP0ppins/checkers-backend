@@ -38,13 +38,15 @@ class Game(models.Model):
     user_1_turn = models.BooleanField(default=True)
     winner = models.CharField(
         choices=WinnerStatus.choices, max_length=6, blank=True)
-    user_1_points = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    user_2_points = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
-    start_at = models.DateTimeField(null=True, blank=True)
-    finish_at = models.DateTimeField(null=True, blank=True)
+    user_1_points = models.DecimalField(
+        max_digits=4, decimal_places=2, blank=True)
+    user_2_points = models.DecimalField(
+        max_digits=4, decimal_places=2, blank=True)
+    start_at = models.DateTimeField(auto_now=True)
+    finish_at = models.DateTimeField(blank=True)
     status = models.CharField(
-        choices=GameStatus.choices, max_length=10, default=GameStatus.CREATED)
-    moves = models.JSONField(default=dict, null=True, blank=True)
+        choices=GameStatus.choices, max_length=10, default=GameStatus.IN_PROCESS)
+    moves = models.JSONField(default=dict, blank=True)
 
 
 class Move(models.Model):
@@ -54,7 +56,7 @@ class Move(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='user')
     checker_id = models.PositiveSmallIntegerField()
-    new_positions = models.JSONField(default=list, null=True, blank=True)
+    new_positions = models.JSONField(default=list, blank=True)
     is_king = models.BooleanField(default=False)
     is_last_move = models.BooleanField(default=True)
     is_white = models.BooleanField(default=True)

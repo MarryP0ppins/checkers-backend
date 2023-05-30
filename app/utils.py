@@ -1,10 +1,12 @@
 from app.models import Move
+from google.protobuf import struct_pb2
+from google.protobuf.internal import containers
 
 
-def create_moves_json(moves):
+def create_moves_json(moves, user_1, user_2):
     moves_tmp = list(moves)
     username_1 = moves_tmp[0].user.username
-    username_2 = ''
+    username_2 = user_1 if username_1 == user_2 else user_2
     username_1_moves = []
     username_2_moves = []
     prev_checker_moves = [['a1'], ['c1'], ['e1'], ['g1'],
@@ -19,9 +21,11 @@ def create_moves_json(moves):
             username_1_moves.append(
                 prev_checker_moves[move.checker_id] + move.new_positions)
         else:
-            if username_2 == '':
-                username_2 = move.user.username
             username_2_moves.append(
                 prev_checker_moves[move.checker_id] + move.new_positions)
         prev_checker_moves[move.checker_id] = move.new_positions[::-1]
+    if (not username_1_moves):
+        username_1_moves = [[]]
+    if (not username_2_moves):
+        username_2_moves = [[]]
     return {username_1: username_1_moves, username_2: username_2_moves}
