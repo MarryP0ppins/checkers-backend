@@ -50,8 +50,7 @@ class GameViewSet(GenericViewSet):
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status']
     search_fields = ['user_1__username', 'user_2__username']
-    # permission_classes = [IsAuthenticatedOrReadOnly]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -120,8 +119,7 @@ class MoveViewSet(GenericViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['game', 'user', 'checker_id', 'is_last_move']
     ordering = ['id']
-    # permission_classes = [IsAuthenticatedOrReadOnly]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         last_move = Move.objects.filter(game_id=request.data.get(
