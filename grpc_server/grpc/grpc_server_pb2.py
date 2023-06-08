@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"grpc_server/grpc/grpc_server.proto\x12\x0bgrpc_server\"H\n\x19\x43reateGameRequestUserInfo\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"z\n\x1e\x43reateGamePartialUpdateRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06winner\x18\x02 \x01(\t\x12\x15\n\ruser_1_points\x18\x03 \x01(\x01\x12\x15\n\ruser_2_points\x18\x04 \x01(\x01\x12\x0e\n\x06status\x18\x05 \x01(\t\"3\n\x11\x43reateGameRequest\x12\x0e\n\x06user_1\x18\x01 \x01(\x05\x12\x0e\n\x06user_2\x18\x02 \x01(\x05\"\xca\x02\n\x0cGameResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12;\n\x0buser_1_info\x18\x02 \x01(\x0b\x32&.grpc_server.CreateGameRequestUserInfo\x12;\n\x0buser_2_info\x18\x03 \x01(\x0b\x32&.grpc_server.CreateGameRequestUserInfo\x12\x13\n\x0buser_1_turn\x18\x04 \x01(\x08\x12\x0e\n\x06winner\x18\x05 \x01(\t\x12\x1a\n\ruser_1_points\x18\x06 \x01(\x01H\x00\x88\x01\x01\x12\x1a\n\ruser_2_points\x18\x07 \x01(\x01H\x01\x88\x01\x01\x12\x10\n\x08start_at\x18\x08 \x01(\t\x12\x11\n\tfinish_at\x18\t \x01(\t\x12\x0e\n\x06status\x18\n \x01(\tB\x10\n\x0e_user_1_pointsB\x10\n\x0e_user_2_points\"\x9e\x01\n\x11\x43reateMoveRequest\x12\x0c\n\x04game\x18\x01 \x01(\x05\x12\x0c\n\x04user\x18\x02 \x01(\x05\x12\x12\n\nchecker_id\x18\x03 \x01(\x05\x12\x15\n\rnew_positions\x18\x04 \x03(\t\x12\x0f\n\x07is_king\x18\x05 \x01(\x08\x12\x10\n\x08is_white\x18\x06 \x01(\x08\x12\x0f\n\x07is_dead\x18\x07 \x01(\x08\x12\x0e\n\x06killed\x18\x08 \x03(\x05\"\xab\x01\n\x0cMoveResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04game\x18\x02 \x01(\x05\x12\x0c\n\x04user\x18\x03 \x01(\x05\x12\x12\n\nchecker_id\x18\x04 \x01(\x05\x12\x15\n\rnew_positions\x18\x05 \x03(\t\x12\x0f\n\x07is_king\x18\x06 \x01(\x08\x12\x10\n\x08is_white\x18\x07 \x01(\x08\x12\x0f\n\x07is_dead\x18\x08 \x01(\x08\x12\x14\n\x0cis_last_move\x18\t \x01(\x08\x32\xb2\x01\n\x0eGameController\x12\x45\n\x06\x43reate\x12\x1e.grpc_server.CreateGameRequest\x1a\x19.grpc_server.GameResponse\"\x00\x12Y\n\rPartialUpdate\x12+.grpc_server.CreateGamePartialUpdateRequest\x1a\x19.grpc_server.GameResponse\"\x00\x32W\n\x0eMoveController\x12\x45\n\x06\x43reate\x12\x1e.grpc_server.CreateMoveRequest\x1a\x19.grpc_server.MoveResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"grpc_server/grpc/grpc_server.proto\x12\x0bgrpc_server\"H\n\x19\x43reateGameRequestUserInfo\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"z\n\x1e\x43reateGamePartialUpdateRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06winner\x18\x02 \x01(\t\x12\x15\n\ruserOnePoints\x18\x03 \x01(\x01\x12\x15\n\ruserTwoPoints\x18\x04 \x01(\x01\x12\x0e\n\x06status\x18\x05 \x01(\t\"5\n\x11\x43reateGameRequest\x12\x0f\n\x07userOne\x18\x01 \x01(\x05\x12\x0f\n\x07userTwo\x18\x02 \x01(\x05\"\x9a\x02\n\x0cGameResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12;\n\x0buserOneInfo\x18\x02 \x01(\x0b\x32&.grpc_server.CreateGameRequestUserInfo\x12;\n\x0buserTwoInfo\x18\x03 \x01(\x0b\x32&.grpc_server.CreateGameRequestUserInfo\x12\x13\n\x0buserOneTurn\x18\x04 \x01(\x08\x12\x0e\n\x06winner\x18\x05 \x01(\t\x12\x15\n\ruserOnePoints\x18\x06 \x01(\x01\x12\x15\n\ruserTwoPoints\x18\x07 \x01(\x01\x12\x0f\n\x07startAt\x18\x08 \x01(\t\x12\x10\n\x08\x66inishAt\x18\t \x01(\t\x12\x0e\n\x06status\x18\n \x01(\t\"\x99\x01\n\x11\x43reateMoveRequest\x12\x0c\n\x04game\x18\x01 \x01(\x05\x12\x0c\n\x04user\x18\x02 \x01(\x05\x12\x11\n\tcheckerId\x18\x03 \x01(\x05\x12\x14\n\x0cnewPositions\x18\x04 \x03(\t\x12\x0e\n\x06isKing\x18\x05 \x01(\x08\x12\x0f\n\x07isWhite\x18\x06 \x01(\x08\x12\x0e\n\x06isDead\x18\x07 \x01(\x08\x12\x0e\n\x06killed\x18\x08 \x03(\x05\"\xa4\x01\n\x0cMoveResponse\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04game\x18\x02 \x01(\x05\x12\x0c\n\x04user\x18\x03 \x01(\x05\x12\x11\n\tcheckerId\x18\x04 \x01(\x05\x12\x14\n\x0cnewPositions\x18\x05 \x03(\t\x12\x0e\n\x06isKing\x18\x06 \x01(\x08\x12\x0f\n\x07isWhite\x18\x07 \x01(\x08\x12\x0e\n\x06isDead\x18\x08 \x01(\x08\x12\x12\n\nisLastMove\x18\t \x01(\x08\x32\xb2\x01\n\x0eGameController\x12\x45\n\x06\x43reate\x12\x1e.grpc_server.CreateGameRequest\x1a\x19.grpc_server.GameResponse\"\x00\x12Y\n\rPartialUpdate\x12+.grpc_server.CreateGamePartialUpdateRequest\x1a\x19.grpc_server.GameResponse\"\x00\x32W\n\x0eMoveController\x12\x45\n\x06\x43reate\x12\x1e.grpc_server.CreateMoveRequest\x1a\x19.grpc_server.MoveResponse\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'grpc_server.grpc.grpc_server_pb2', globals())
@@ -25,15 +25,15 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _CREATEGAMEPARTIALUPDATEREQUEST._serialized_start=125
   _CREATEGAMEPARTIALUPDATEREQUEST._serialized_end=247
   _CREATEGAMEREQUEST._serialized_start=249
-  _CREATEGAMEREQUEST._serialized_end=300
-  _GAMERESPONSE._serialized_start=303
-  _GAMERESPONSE._serialized_end=633
-  _CREATEMOVEREQUEST._serialized_start=636
-  _CREATEMOVEREQUEST._serialized_end=794
-  _MOVERESPONSE._serialized_start=797
-  _MOVERESPONSE._serialized_end=968
-  _GAMECONTROLLER._serialized_start=971
-  _GAMECONTROLLER._serialized_end=1149
-  _MOVECONTROLLER._serialized_start=1151
-  _MOVECONTROLLER._serialized_end=1238
+  _CREATEGAMEREQUEST._serialized_end=302
+  _GAMERESPONSE._serialized_start=305
+  _GAMERESPONSE._serialized_end=587
+  _CREATEMOVEREQUEST._serialized_start=590
+  _CREATEMOVEREQUEST._serialized_end=743
+  _MOVERESPONSE._serialized_start=746
+  _MOVERESPONSE._serialized_end=910
+  _GAMECONTROLLER._serialized_start=913
+  _GAMECONTROLLER._serialized_end=1091
+  _MOVECONTROLLER._serialized_start=1093
+  _MOVECONTROLLER._serialized_end=1180
 # @@protoc_insertion_point(module_scope)

@@ -1,13 +1,12 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.generics import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from app.permissions import IsSuperUser
 from app.serializers import *
-from authentication.serializers import *
 from app.utils import create_moves_json
+from authentication.serializers import *
 
 
 class ProfileViewSet(GenericViewSet):
@@ -49,7 +48,7 @@ class GameViewSet(GenericViewSet):
     serializer_class = GameSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['status']
-    search_fields = ['user_1__username', 'user_2__username']
+    search_fields = ['userOne__username', 'userTwo__username']
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
@@ -83,17 +82,17 @@ class GameViewSet(GenericViewSet):
                 if moves:
                     game.moves = create_moves_json(moves)
                     moves.delete()
-                profile_1 = Profile.objects.get(user__id=game.user_1_id)
-                profile_2 = Profile.objects.get(user__id=game.user_2_id)
+                profile_1 = Profile.objects.get(user__id=game.userOne_id)
+                profile_2 = Profile.objects.get(user__id=game.userTwo_id)
                 if profile_1:
                     profile_1.rating = profile_1.rating + \
-                        serializer.validated_data.get('user_1_points')
+                        serializer.validated_data.get('userOnePoints')
                     profile_1.games = profile_1.games + 1
                     if serializer.validated_data.get('winner') == 'USER_1':
                         profile_1.wins = profile_1.wins + 1
                 if profile_2:
                     profile_2.rating = profile_2.rating + \
-                        serializer.validated_data.get('user_2_points')
+                        serializer.validated_data.get('userTwoPoints')
                     profile_2.games = profile_2.games + 1
                     if not serializer.validated_data.get('winner') == 'USER_2':
                         profile_1.wins = profile_1.wins + 1
@@ -117,25 +116,25 @@ class MoveViewSet(GenericViewSet):
     queryset = Move.objects.all()
     serializer_class = MoveSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['game', 'user', 'checker_id', 'is_last_move']
+    filterset_fields = ['game', 'user', 'checkerId', 'isLastMove']
     ordering = ['id']
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         last_move = Move.objects.filter(game_id=request.data.get(
-            'game'), checker_id=request.data.get('checker_id')).last()
+            'game'), checker_id=request.data.get('checkerId')).last()
         if last_move:
-            last_move.is_last_move = False
+            last_move.isLastMove = False
             last_move.save()
         if request.data.get('killed'):
             killed = request.data.pop('killed')
             Move.objects.filter(game=request.data.get(
-                'game'), checker_id__in=killed).update(is_dead=True)
+                'game'), checkerId__in=killed).update(is_dead=True)
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         game = Game.objects.get(pk=serializer.data.get('game'))
-        game.user_1_turn = not game.user_1_turn
+        game.userOneTurn = not game.userOneTurn
         game.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

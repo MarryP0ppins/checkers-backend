@@ -8,64 +8,64 @@ from datetime import datetime
 
 
 class CreateGameProtoSerializer(serializers.ModelSerializer):
-    user_1 = serializers.PrimaryKeyRelatedField(
+    userOne = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), write_only=True)
-    user_2 = serializers.PrimaryKeyRelatedField(
+    userTwo = serializers.PrimaryKeyRelatedField(
         queryset=User.objects.all(), write_only=True)
-    user_1_info = UserSerializer(read_only=True)
-    user_2_info = UserSerializer(read_only=True)
-    user_1_points = serializers.DecimalField(
+    userOneInfo = UserSerializer(read_only=True)
+    userTwoInfo = UserSerializer(read_only=True)
+    userOnePoints = serializers.DecimalField(
         max_digits=4, decimal_places=2, coerce_to_string=False, required=False)
-    user_2_points = serializers.DecimalField(
+    userTwoPoints = serializers.DecimalField(
         max_digits=4, decimal_places=2, coerce_to_string=False, required=False)
     moves = serializers.DictField(child=serializers.ListField(child=serializers.ListField(
         child=serializers.CharField(max_length=2))), read_only=True, required=False)
-    start_at = serializers.CharField(read_only=True)
-    finish_at = serializers.CharField(read_only=True)
-    user_1_turn = serializers.BooleanField(read_only=True, required=False)
+    startAt = serializers.CharField(read_only=True)
+    finishAt = serializers.CharField(read_only=True)
+    userOneTurn = serializers.BooleanField(read_only=True, required=False)
     status = serializers.CharField(max_length=64, required=False)
 
     class Meta:
         model = Game
         proto_class = GameResponse
         fields = ["id",
-                  "user_1",
-                  "user_2",
-                  "user_1_info",
-                  "user_2_info",
-                  "user_1_turn",
+                  "userOne",
+                  "userTwo",
+                  "userOneInfo",
+                  "userTwoInfo",
+                  "userOneTurn",
                   "winner",
-                  "user_1_points",
-                  "user_2_points",
-                  "start_at",
-                  "finish_at",
+                  "userOnePoints",
+                  "userTwoPoints",
+                  "startAt",
+                  "finishAt",
                   "status",
                   "moves"]
 
     def create(self, validated_data):
         game = Game.objects.create(**validated_data)
-        user_1 = User.objects.get(pk=game.user_1.id)
-        user_2 = User.objects.get(pk=game.user_2.id)
+        user_1 = User.objects.get(pk=game.userOne.id)
+        user_2 = User.objects.get(pk=game.userTwo.id)
         # .strftime("%Y-%m-%d %H:%M:%S")
         return {
             "id": game.id,
-            "user_1_turn": game.user_1_turn,
-            "user_1_info": UserSerializer(user_1).data,
-            "user_2_info": UserSerializer(user_2).data,
-            "start_at": game.start_at,
+            "userOneTurn": game.userOneTurn,
+            "userOneInfo": UserSerializer(user_1).data,
+            "userTwoInfo": UserSerializer(user_2).data,
+            "startAt": game.startAt,
             "status": game.status
         }
 
     def update(self, instance, validated_data):
         instance.winner = validated_data.get('winner', instance.winner)
-        instance.user_1_points = validated_data.get(
-            'user_1_points', instance.user_1_points)
-        instance.user_2_points = validated_data.get(
-            'user_2_points', instance.user_2_points)
+        instance.userOnePoints = validated_data.get(
+            'user_1_points', instance.userOnePoints)
+        instance.userTwoPoints = validated_data.get(
+            'user_2_points', instance.userTwoPoints)
         instance.status = validated_data.get('status', instance.status)
 
-        user_1 = User.objects.get(pk=instance.user_1.id)
-        user_2 = User.objects.get(pk=instance.user_2.id)
+        user_1 = User.objects.get(pk=instance.userOne.id)
+        user_2 = User.objects.get(pk=instance.userTwo.id)
         moves = Move.objects.filter(game=instance.id)
         
         if moves:
@@ -75,31 +75,26 @@ class CreateGameProtoSerializer(serializers.ModelSerializer):
 
         return {
             "id": instance.id,
-            "user_1_turn": instance.user_1_turn,
-            "user_1_info": UserSerializer(user_1).data,
-            "user_2_info": UserSerializer(user_2).data,
+            "userOneTurn": instance.userOneTurn,
+            "userOneInfo": UserSerializer(user_1).data,
+            "userTwoInfo": UserSerializer(user_2).data,
             "winner": instance.winner,
-            "user_1_points": instance.user_1_points,
-            "user_2_points": instance.user_2_points,
-            "start_at": instance.start_at,
-            "finish_at": datetime.now(),
+            "userOnePoints": instance.userOnePoints,
+            "userTwoPoints": instance.userTwoPoints,
+            "startAt": instance.startAt,
+            "finishAt": datetime.now(),
             "status": instance.status
         }
 
 
 class CreateMoveProtoSerializer(serializers.ModelSerializer):
-    is_last_move = serializers.BooleanField(read_only=True)
-    new_positions = serializers.ListField(
+    isLastMove = serializers.BooleanField(read_only=True)
+    newPositions = serializers.ListField(
         child=serializers.CharField(max_length=2))
-    is_dead = serializers.BooleanField(read_only=True)
+    isDead = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Move
         proto_class = MoveResponse
-        fields = ["id", "game", "user", "checker_id", "new_positions",
-                  "is_white", "is_king", "is_dead", "is_last_move"]
-
-    # def create(self, validated_data):
-    #     game = Move.objects.create(**validated_data)
-    #     print(game.new_positions)
-    #     return game
+        fields = ["id", "game", "user", "checkerId", "newPositions",
+                  "isWhite", "isKing", "isDead", "isLastMove"]

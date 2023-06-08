@@ -11,13 +11,13 @@ class ProfileAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     list_display = (
         'id',
-        'user_1',
-        'user_2',
-        'start_at',
-        'finish_at',
+        'userOne',
+        'userTwo',
+        'startAt',
+        'finishAt',
         'status')
 
 
 @admin.register(Move)
 class MoveAdmin(admin.ModelAdmin):
-    list_display = ('id', 'game', 'user', 'checker_id', 'is_white')
+    list_display = ('id', 'game', 'user', 'checkerId', 'isWhite')

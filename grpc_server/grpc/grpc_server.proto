@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package grpc_server;
 
-//import "google/protobuf/struct.proto";
-
 service GameController {
     rpc Create(CreateGameRequest) returns (GameResponse) {}
     rpc PartialUpdate(CreateGamePartialUpdateRequest) returns (GameResponse) {}
@@ -22,37 +20,37 @@ message CreateGameRequestUserInfo {
 message CreateGamePartialUpdateRequest {
     int32 id = 1;
     string winner = 2;
-    double user_1_points = 3;
-    double user_2_points = 4;
+    double userOnePoints = 3;
+    double userTwoPoints = 4;
     string status = 5;
 }
 
 message CreateGameRequest {
-    int32 user_1 = 1;
-    int32 user_2 = 2;
+    int32 userOne = 1;
+    int32 userTwo = 2;
 }
 
 message GameResponse {
     int32 id = 1;
-    CreateGameRequestUserInfo user_1_info = 2;
-    CreateGameRequestUserInfo user_2_info = 3;
-    bool user_1_turn = 4;
+    CreateGameRequestUserInfo userOneInfo = 2;
+    CreateGameRequestUserInfo userTwoInfo = 3;
+    bool userOneTurn = 4;
     string winner = 5;
-    optional double user_1_points = 6;
-    optional double user_2_points = 7;
-    string start_at = 8;
-    string finish_at = 9;
+    double userOnePoints = 6;
+    double userTwoPoints = 7;
+    string startAt = 8;
+    string finishAt = 9;
     string status = 10;
 }
 
 message CreateMoveRequest {
     int32 game = 1;
     int32 user = 2;
-    int32 checker_id = 3;
-    repeated string new_positions = 4;
-    bool is_king = 5;
-    bool is_white = 6;
-    bool is_dead = 7;
+    int32 checkerId = 3;
+    repeated string newPositions = 4;
+    bool isKing = 5;
+    bool isWhite = 6;
+    bool isDead = 7;
     repeated int32 killed = 8;
 }
 
@@ -60,10 +58,10 @@ message MoveResponse {
     int32 id = 1; 
     int32 game = 2;
     int32 user = 3;
-    int32 checker_id = 4;
-    repeated string new_positions = 5;
-    bool is_king = 6;
-    bool is_white = 7;
-    bool is_dead = 8;
-    bool is_last_move = 9;
+    int32 checkerId = 4;
+    repeated string newPositions = 5;
+    bool isKing = 6;
+    bool isWhite = 7;
+    bool isDead = 8;
+    bool isLastMove = 9;
 }

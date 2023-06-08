@@ -1,8 +1,3 @@
-from app.models import Move
-from google.protobuf import struct_pb2
-from google.protobuf.internal import containers
-
-
 def create_moves_json(moves, user_1, user_2):
     moves_tmp = list(moves)
     username_1 = moves_tmp[0].user.username
@@ -19,11 +14,11 @@ def create_moves_json(moves, user_1, user_2):
     for move in moves_tmp:
         if move.user.username == username_1:
             username_1_moves.append(
-                prev_checker_moves[move.checker_id] + move.new_positions)
+                prev_checker_moves[move.checkerId] + move.newPositions)
         else:
             username_2_moves.append(
-                prev_checker_moves[move.checker_id] + move.new_positions)
-        prev_checker_moves[move.checker_id] = move.new_positions[::-1]
+                prev_checker_moves[move.checkerId] + move.newPositions)
+        prev_checker_moves[move.checkerId] = move.newPositions[::-1]
     if (not username_1_moves):
         username_1_moves = [[]]
     if (not username_2_moves):

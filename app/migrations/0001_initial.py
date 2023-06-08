@@ -10,42 +10,4 @@ class Migration(migrations.Migration):
     dependencies = [
     ]
 
-    operations = [
-        migrations.CreateModel(
-            name='Game',
-            fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('start_at', models.DateTimeField(default='', null=True)),
-                ('finish_at', models.DateTimeField(default='', null=True)),
-                ('status',
-                 models.CharField(choices=[('CREATE',
-                                            'Создана'),
-                                           ('IN_PROCESS',
-                                            'В процессе'),
-                                           ('FINISHED',
-                                            'Закончена')],
-                                  max_length=10)),
-                ('moves', models.JSONField(default=dict, null=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Move',
-            fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('checker_id', models.DecimalField(
-                    decimal_places=0, max_digits=1)),
-                ('new_position', models.CharField(max_length=1)),
-                ('is_last_move', models.BooleanField(default=True)),
-                ('is_white', models.BooleanField(default=True)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Profile',
-            fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('games', models.PositiveSmallIntegerField(default=0)),
-                ('wins', models.PositiveSmallIntegerField(default=0)),
-                ('rating', models.PositiveSmallIntegerField(default=0)),
-            ],
-        ),
-    ]
+    operations = []

@@ -6,9 +6,7 @@ from grpc_server.grpc import grpc_server_pb2 as grpc__server_dot_grpc_dot_grpc__
 
 
 class GameControllerStub(object):
-    """import "google/protobuf/struct.proto";
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -29,9 +27,7 @@ class GameControllerStub(object):
 
 
 class GameControllerServicer(object):
-    """import "google/protobuf/struct.proto";
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def Create(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -66,9 +62,7 @@ def add_GameControllerServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class GameController(object):
-    """import "google/protobuf/struct.proto";
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def Create(request,
