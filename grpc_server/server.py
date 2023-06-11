@@ -37,6 +37,7 @@ class GameController(GameControllerServicer):
             "status": request.status
         }, partial=True)
         if serializer.is_valid(raise_exception=True):
+            serializer.save()
             if serializer.validated_data.get('status') == 'FINISHED':
                 profile_1 = Profile.objects.get(user__id=game.userOne_id)
                 profile_2 = Profile.objects.get(user__id=game.userTwo_id)
@@ -50,9 +51,10 @@ class GameController(GameControllerServicer):
                     profile_2.rating = profile_2.rating + \
                         serializer.validated_data.get('userTwoPoints')
                     profile_2.games = profile_2.games + 1
-                    if not serializer.validated_data.get('winner') == 'USER_2':
+                    if serializer.validated_data.get('winner') == 'USER_2':
                         profile_1.wins = profile_1.wins + 1
-            serializer.save()
+                profile_1.save()
+                profile_2.save()
             return GameResponse(**serializer.data)
         return Exception(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

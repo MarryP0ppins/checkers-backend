@@ -16,7 +16,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     games = models.PositiveSmallIntegerField(default=0)
     wins = models.PositiveSmallIntegerField(default=0)
-    rating = models.PositiveSmallIntegerField(default=0)
+    rating = models.DecimalField(
+        max_digits=7, decimal_places=2, default=0)
 
 
 class Game(models.Model):
@@ -39,9 +40,9 @@ class Game(models.Model):
     winner = models.CharField(
         choices=WinnerStatus.choices, max_length=6, blank=True)
     userOnePoints = models.DecimalField(
-        max_digits=4, decimal_places=2, blank=True, default=0)
+        max_digits=7, decimal_places=2, default=0)
     userTwoPoints = models.DecimalField(
-        max_digits=4, decimal_places=2, blank=True, default=0)
+        max_digits=7, decimal_places=2, default=0)
     startAt = models.DateTimeField(auto_now=True)
     finishAt = models.DateTimeField(blank=True, null=True)
     status = models.CharField(

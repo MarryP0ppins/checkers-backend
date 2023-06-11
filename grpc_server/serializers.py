@@ -59,20 +59,21 @@ class CreateGameProtoSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.winner = validated_data.get('winner', instance.winner)
         instance.userOnePoints = validated_data.get(
-            'user_1_points', instance.userOnePoints)
+            'userOnePoints', instance.userOnePoints)
         instance.userTwoPoints = validated_data.get(
-            'user_2_points', instance.userTwoPoints)
+            'userTwoPoints', instance.userTwoPoints)
         instance.status = validated_data.get('status', instance.status)
-
+        instance.finishAt = datetime.now()
+        instance.save()
+        
         user_1 = User.objects.get(pk=instance.userOne.id)
         user_2 = User.objects.get(pk=instance.userTwo.id)
         moves = Move.objects.filter(game=instance.id)
-        
+
         if moves:
             instance.moves = create_moves_json(
                 moves, user_1.username, user_2.username)
             moves.delete()
-
         return {
             "id": instance.id,
             "userOneTurn": instance.userOneTurn,
@@ -82,7 +83,7 @@ class CreateGameProtoSerializer(serializers.ModelSerializer):
             "userOnePoints": instance.userOnePoints,
             "userTwoPoints": instance.userTwoPoints,
             "startAt": instance.startAt,
-            "finishAt": datetime.now(),
+            "finishAt": instance.finishAt,
             "status": instance.status
         }
 
